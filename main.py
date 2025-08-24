@@ -77,13 +77,14 @@ if __name__ == '__main__':
     # Set the parameters
     M = 27
     N = 4096
-    trial_num = 100
-    sum_nodes = 0
-    for i in range(trial_num):
-        # Expand the sd to obtain a GGM tree
-        sd = os.urandom(16)
+    # Expand the sd to obtain a GGM tree
+    sd = os.urandom(16)
 
-        tree = bcavc_generate(sd, M, N)
+    tree = bcavc_generate(sd, M, N)
+    trial_num = 100
+    sizes = []
+
+    for _ in range(trial_num):
         # Simulate random opening for BCAVC
         challenge_ind: List[int] = []
         for j in range(M):
@@ -95,7 +96,8 @@ if __name__ == '__main__':
         # Compute the number of nodes in the opening
         total_nodes = sum(len(step["indices"]) for step in proof)
 
-        sum_nodes += total_nodes
-    sum_nodes /= trial_num
+        sizes.append(sum(len(step["indices"]) for step in proof))
 
-    print("Average Opening Size for",trial_num,"trials is",sum_nodes)
+    print("min proof size =", min(sizes))
+    print("max proof size =", max(sizes))
+    print("Average proof size =", sum(sizes)/len(sizes))
