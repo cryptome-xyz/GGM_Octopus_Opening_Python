@@ -24,7 +24,7 @@ def prg_split_shake_16(key: bytes) -> Tuple[bytes, bytes]:
     return stream[:16], stream[16:]
 
 
-def bcavc_generate(seed: bytes, M: int, N: int) -> List[List[bytes]]:
+def ggm_generate(seed: bytes, M: int, N: int) -> List[List[bytes]]:
     abandon_layers = set(find_abandon_index(M, N))
     H = (M - 1).bit_length() + (N - 1).bit_length()
     layers: List[List[bytes]] = [[seed]]
@@ -42,7 +42,7 @@ def bcavc_generate(seed: bytes, M: int, N: int) -> List[List[bytes]]:
     return layers
 
 
-def bcavc_open(layers: List[List[bytes]], A: List[int]) -> list[dict[str, Any]]:
+def ggm_open(layers: List[List[bytes]], A: List[int]) -> list[dict[str, Any]]:
     H = len(layers) - 1
     target = sorted(set(A))
     proof: List[Dict[str, Any]] = []
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     # Expand the sd to obtain a GGM tree
     sd = os.urandom(16)
 
-    tree = bcavc_generate(sd, M, N)
+    tree = ggm_generate(sd, M, N)
     trial_num = 100
     sizes = []
 
@@ -91,7 +91,7 @@ if __name__ == '__main__':
             challenge_ind.append(j + randint(0, N - 1) * M)
 
         # Open the tree
-        proof = bcavc_open(tree, challenge_ind)
+        proof = ggm_open(tree, challenge_ind)
 
         # Compute the number of nodes in the opening
         total_nodes = sum(len(step["indices"]) for step in proof)
