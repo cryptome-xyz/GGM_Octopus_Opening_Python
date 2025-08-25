@@ -6,10 +6,8 @@ The proof generation is specifically tailored for openings in Batched All-But-On
 
 ---
 
-## Status
-
-- **Opening of GGM trees** is implemented and functional.  
-- **Verification** is not yet implemented (planned to finish within a week).
+## To do
+- Optimize the code
 
 ---
 ## Acknowledgements
